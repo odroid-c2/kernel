@@ -16,13 +16,13 @@ echo "[INFO] $(nproc) processors are available"
 ## linux kernel
 rm -rf linux-stable
 echo "o [$(date +%H:%M:%S)] Clonning linux-stable kernel"
-git clone --depth 1 https://kernel.googlesource.com/pub/scm/linux/kernel/git/stable/linux -b linux-5.15.y linux-stable 2>&1 > /dev/null
+git clone --quiet --depth 1 https://kernel.googlesource.com/pub/scm/linux/kernel/git/stable/linux -b linux-5.15.y linux-stable
 
 
 ## toolchain
 rm -rf toolchain
 echo "o [$(date +%H:%M:%S)] Clonning aarch64-linux-gnu toolchain"
-git clone --depth=1 https://github.com/theradcolor/aarch64-linux-gnu -b master toolchain 2>&1 > /dev/null
+git clone --quiet --depth=1 https://github.com/theradcolor/aarch64-linux-gnu -b master toolchain
 
 
 ## clean-up
@@ -86,6 +86,7 @@ rm -rf "${KERNEL_PATH}/installed-modules"
 
 
 ## assembly
+echo "o [$(date +%H:%M:%S)] Assembly"
 mkdir -p ${DST_DIR_BOOT}
 gzip -c "${KERNEL_PATH}/arch/arm64/boot/Image" > ${DST_DIR_BOOT}/vmlinuz
 cp "${KERNEL_PATH}/.config" ${DST_DIR_BOOT}/config
