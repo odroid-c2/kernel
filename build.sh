@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 ## init
 export ARCH=arm64
 export HOME_DIR=$(pwd)
@@ -8,21 +9,26 @@ export TOOLCHAIN_PATH="${HOME_DIR}/toolchain"
 export CROSS_COMPILE=${TOOLCHAIN_PATH}/bin/aarch64-linux-gnu-
 export DST_DIR="${HOME_DIR}/output-odroid-c2/" && rm -rf $DST_DIR
 export DST_DIR_BOOT="${DST_DIR}boot/"
+export NBPROC=$(($(nproc)+1))
+echo "[INFO] $(nproc) processors are available"
 
 
 ## linux kernel
 rm -rf linux-stable
-git clone --depth 1 https://kernel.googlesource.com/pub/scm/linux/kernel/git/stable/linux -b linux-5.15.y linux-stable
+echo "o [$(date +%H:%M:%S)] Clonning linux-stable kernel"
+git clone --depth 1 https://kernel.googlesource.com/pub/scm/linux/kernel/git/stable/linux -b linux-5.15.y linux-stable 2>&1 > /dev/null
 
 
 ## toolchain
 rm -rf toolchain
-git clone --depth=1 https://github.com/theradcolor/aarch64-linux-gnu -b master toolchain
+echo "o [$(date +%H:%M:%S)] Clonning aarch64-linux-gnu toolchain"
+git clone --depth=1 https://github.com/theradcolor/aarch64-linux-gnu -b master toolchain 2>&1 > /dev/null
 
 
 ## clean-up
 cd linux-stable
-make mrproper && make defconfig
+echo "o [$(date +%H:%M:%S)] Setting-up kernel configuration"
+make mrproper && make defconfig 2>&1 > /dev/null
 
 
 ## kernel configuration
@@ -35,13 +41,21 @@ echo CONFIG_BLK_DEV_RAM_SIZE=4096 >> .config
 sed -i -e 's/CONFIG_DRM_\(.*\)=.*/# CONFIG_DRM_\1 is not set/' .config
 sed -i -e 's/.*CONFIG_DRM_LIMA.*/CONFIG_DRM_LIMA=m/' .config
 sed -i -e 's/.*CONFIG_DRM_PANFROST.*/CONFIG_DRM_PANFROST=m/' .config
+sed -i -e 's/.*CONFIG_WIRELESS.*/# CONFIG_WIRELESS is not set/' .config
 
 
-## build
-time make -j$(nproc) Image modules
+## build image
+echo "o [$(date +%H:%M:%S)] Building image"
+time make -j$NBPROC Image 2>&1 > kernel.log
 
 
-## dtbs
+## build modules
+echo "o [$(date +%H:%M:%S)] Building modules"
+time make -j$NBPROC modules 2>&1 > modules.log
+
+
+## build dtbs
+echo "o [$(date +%H:%M:%S)] Building dtbs"
 git apply --ignore-space-change --ignore-whitespace - << EOF
 diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts b/arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts
 index 201596247..027df3756 100644
@@ -58,12 +72,13 @@ index 201596247..027df3756 100644
 
  /* SD */
 EOF
-time make -j$(nproc) dtbs
+time make -j$NBPROC dtbs 2>&1 > dtbs.log
 
 
 ## modloop
+echo "o [$(date +%H:%M:%S)] Creating modloop"
 rm -rf "${KERNEL_PATH}/installed-modules" && mkdir "${KERNEL_PATH}/installed-modules"
-INSTALL_MOD_PATH="${KERNEL_PATH}/installed-modules" make modules_install
+INSTALL_MOD_PATH="${KERNEL_PATH}/installed-modules" make modules_install 2>&1 > /dev/null
 find "${KERNEL_PATH}/installed-modules" -type l -delete
 rm -f "${KERNEL_PATH}/modloop"
 mksquashfs "${KERNEL_PATH}/installed-modules/lib/" "${KERNEL_PATH}/modloop" -b 1048576 -comp xz -Xdict-size 100% -all-root
@@ -72,7 +87,7 @@ rm -rf "${KERNEL_PATH}/installed-modules"
 
 ## assembly
 mkdir -p ${DST_DIR_BOOT}
-gzip -c "${KERNEL_PATH}/arch/arm64/boot/Image > ${DST_DIR_BOOT}/vmlinuz
+gzip -c "${KERNEL_PATH}/arch/arm64/boot/Image" > ${DST_DIR_BOOT}/vmlinuz
 cp "${KERNEL_PATH}/.config" ${DST_DIR_BOOT}/config
 mv "${KERNEL_PATH}/modloop" ${DST_DIR_BOOT}/modloop
 cp "${KERNEL_PATH}/System.map" ${DST_DIR_BOOT}/System.map
