@@ -1,0 +1,13 @@
+name: Build
+
+on: push
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      # Check out
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Build
+        run: chmod +x "${GITHUB_WORKSPACE}/.github/script.sh" && "${GITHUB_WORKSPACE}/build.sh"
