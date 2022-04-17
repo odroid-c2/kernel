@@ -9,5 +9,13 @@ jobs:
       # Check out
       - name: Check out the repo
         uses: actions/checkout@v2
+      # Build
       - name: Build
         run: chmod +x "${GITHUB_WORKSPACE}/build.sh" && "${GITHUB_WORKSPACE}/build.sh"
+      # Add and commit
+      - uses: EndBug/add-and-commit@v9
+        with:
+          committer_name: Buildbot
+          message: New kernel release
+          committer_email: actions@github.com
+          new_branch: kernel-releases
