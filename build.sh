@@ -14,18 +14,12 @@ export KERNEL_BRANCH="5.15"
 echo "[INFO] $(nproc) processors are available"
 
 
-## linux kernel
-rm -rf linux-stable
-echo "o [$(date +%H:%M:%S)] Clonning linux-stable kernel"
-git clone --quiet --depth 1 https://kernel.googlesource.com/pub/scm/linux/kernel/git/stable/linux -b linux-5.15.y linux-stable
-
-
 ## version check
 NEXT_VERSION=$(wget -qO- "https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/plain/Makefile?h=linux-$KERNEL_BRANCH.y" | awk '/SUBLEVEL/ {print $3; exit}')
 CURRENT_VERSION=$(wget -qO- "https://raw.githubusercontent.com/odroid-c2/kernel/kernel-releases/version" || echo 0)
 if [[ ${CURRENT_VERSION} == ${NEXT_VERSION} ]]; then
 	echo "o ${KERNEL_BRANCH}.${CURRENT_VERSION} is up to date, nothing to do"
-	exit
+	exit 0
 else
 	echo "o Current version is ${KERNEL_BRANCH}.${CURRENT_VERSION}, building ${KERNEL_BRANCH}.${NEXT_VERSION}"
 fi
@@ -33,6 +27,12 @@ fi
 
 ## set version
 echo "${NEXT_VERSION}" > version
+
+
+## linux kernel
+rm -rf linux-stable
+echo "o [$(date +%H:%M:%S)] Clonning linux-stable kernel"
+git clone --quiet --depth 1 https://kernel.googlesource.com/pub/scm/linux/kernel/git/stable/linux -b linux-5.15.y linux-stable
 
 
 ## toolchain
