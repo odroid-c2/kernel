@@ -142,7 +142,7 @@ echo "datahash = $(du ${DST_DIR_BOOT} | openssl dgst -sha1 -binary | xxd -p)" >>
 
 
 ## compress data
-tar -C ${DST_DIR} -czf linux-kernel-amlogic-${KERNEL_BRANCH}.${CURRENT_VERSION}.tar.gz .PKGINFO boot/
+tar -C ${DST_DIR} -czf linux-kernel-amlogic-${KERNEL_BRANCH}.${NEXT_VERSION}.tar.gz .PKGINFO boot/
 
 
 ## clean again
