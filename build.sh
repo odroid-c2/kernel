@@ -38,7 +38,7 @@ git clone --quiet --depth 1 https://kernel.googlesource.com/pub/scm/linux/kernel
 ## toolchain
 rm -rf toolchain
 echo "o [$(date +%H:%M:%S)] Clonning aarch64-linux-gnu toolchain"
-git clone --quiet --depth=1 https://github.com/theradcolor/aarch64-linux-gnu -b master toolchain
+git clone --quiet --depth=1 https://github.com/odroid-c2/aarch64-linux-gnu.git -b master toolchain
 
 
 ## clean-up
