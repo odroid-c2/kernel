@@ -1,6 +1,10 @@
-name: Build
+name: Build and release
 
-on: push
+on:
+  push:
+    tags:
+      - '*'
+
 
 jobs:
   compile:
@@ -12,11 +16,12 @@ jobs:
       # Build
       - name: Build
         run: chmod +x "${GITHUB_WORKSPACE}/build.sh" && "${GITHUB_WORKSPACE}/build.sh"
-      # Add and commit
-      - uses: EndBug/add-and-commit@v9
+      # Add to release
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
         with:
-          committer_name: Buildbot
-          message: New kernel release
-          committer_email: actions@github.com
-          new_branch: kernel-releases
-          pull: --rebase
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: linux-kernel-amlogic-*
+          tag: ${{ github.ref }}
+          overwrite: true
+          body: "Kernel release ${{ github.ref }}"
