@@ -19,3 +19,4 @@ jobs:
           message: New kernel release
           committer_email: actions@github.com
           new_branch: kernel-releases
+          pull: --rebase
