@@ -89,6 +89,7 @@ index 201596247..027df3756 100644
  /* SD */
 EOF
 make -j$NBPROC dtbs 2>&1 > dtbs.log
+git checkout arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts
 
 
 ## modloop
