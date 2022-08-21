@@ -3,7 +3,7 @@ name: test
 on:
   push:
     tags:
-      - '*'
+      - 'disabled for now'
 
 
 jobs:
