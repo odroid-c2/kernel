@@ -24,4 +24,5 @@ jobs:
           file: linux-kernel-amlogic-*
           tag: ${{ github.ref }}
           overwrite: true
+          file_glob: true
           body: "Kernel release ${{ github.ref }}"
