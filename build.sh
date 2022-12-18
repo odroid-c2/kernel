@@ -29,10 +29,14 @@ fi
 echo "${NEXT_VERSION}" > version
 
 
-## linux kernel
+## get linux kernel
 rm -rf linux-stable
 echo "o [$(date +%H:%M:%S)] Clonning linux-stable kernel"
-git clone --quiet --depth 1 https://kernel.googlesource.com/pub/scm/linux/kernel/git/stable/linux -b "linux-$KERNEL_BRANCH.y" linux-stable
+wget -q "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${KERNEL_BRANCH}.${NEXT_VERSION}.tar.xz" -O kernel.tar.xz
+xz -d -v kernel.tar.xz
+mkdir -p linux-stable
+tar xf kernel.tar --strip 1 -C linux-stable
+rm kernel.tar
 
 
 ## toolchain
