@@ -10,7 +10,7 @@ export CROSS_COMPILE=${TOOLCHAIN_PATH}/bin/aarch64-linux-gnu-
 export DST_DIR="${HOME_DIR}/output-odroid-c2/" && rm -rf $DST_DIR
 export DST_DIR_BOOT="${DST_DIR}boot/"
 export NBPROC=$(($(nproc)+1))
-export KERNEL_BRANCH="5.15"
+export KERNEL_BRANCH="6.1"
 echo "[INFO] $(nproc) processors are available"
 
 
@@ -32,7 +32,7 @@ echo "${NEXT_VERSION}" > version
 ## get linux kernel
 rm -rf linux-stable
 echo "o [$(date +%H:%M:%S)] Clonning linux-stable kernel"
-wget -q "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${KERNEL_BRANCH}.${NEXT_VERSION}.tar.xz" -O kernel.tar.xz
+wget -q "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-${KERNEL_BRANCH}.${NEXT_VERSION}.tar.xz" -O kernel.tar.xz
 xz -d -v kernel.tar.xz
 mkdir -p linux-stable
 tar xf kernel.tar --strip 1 -C linux-stable
