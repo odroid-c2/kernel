@@ -62,6 +62,7 @@ sed -i -e 's/CONFIG_DRM_\(.*\)=.*/# CONFIG_DRM_\1 is not set/' .config
 sed -i -e 's/.*CONFIG_DRM_LIMA.*/CONFIG_DRM_LIMA=m/' .config
 sed -i -e 's/.*CONFIG_DRM_PANFROST.*/CONFIG_DRM_PANFROST=m/' .config
 sed -i -e 's/.*CONFIG_WIRELESS.*/# CONFIG_WIRELESS is not set/' .config
+sed -i -e 's/CONFIG_PHY_QCOM_\(.*\)=.*/# CONFIG_PHY_QCOM_\1 is not set/' .config
 
 
 ## build image
