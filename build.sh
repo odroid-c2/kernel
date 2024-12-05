@@ -10,7 +10,7 @@ export CROSS_COMPILE=${TOOLCHAIN_PATH}/bin/aarch64-linux-gnu-
 export DST_DIR="${HOME_DIR}/output-odroid-c2/" && rm -rf $DST_DIR
 export DST_DIR_BOOT="${DST_DIR}boot/"
 export NBPROC=$(($(nproc)+1))
-export KERNEL_BRANCH="6.6"
+export KERNEL_BRANCH="6.12"
 echo "[INFO] $(nproc) processors are available"
 
 
