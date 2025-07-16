@@ -61,11 +61,12 @@ echo CONFIG_BLK_DEV_RAM_SIZE=4096 >> .config
 sed -i -e 's/CONFIG_DRM_\(.*\)=.*/# CONFIG_DRM_\1 is not set/' .config
 sed -i -e 's/.*CONFIG_DRM_LIMA.*/CONFIG_DRM_LIMA=m/' .config
 sed -i -e 's/.*CONFIG_DRM_PANFROST.*/CONFIG_DRM_PANFROST=m/' .config
+sed -i -e 's/.*CONFIG_DRM_SIMPLE_BRIDGE.*/CONFIG_DRM_SIMPLE_BRIDGE=m/' .config
 sed -i -e 's/CONFIG_WIRELESS\(.*\)=.*/# CONFIG_WIRELESS\1 is not set/' .config
 sed -i -e 's/CONFIG_IWL\(.*\)=.*/# CONFIG_IWL\1 is not set/' .config
 sed -i -e 's/CONFIG_PHY_QCOM_\(.*\)=.*/# CONFIG_PHY_QCOM_\1 is not set/' .config
 sed -i -e 's/CONFIG_BT_\(.*\)=.*/# CONFIG_BT_\1 is not set/' .config
-sed -i -e 's/CONFIG_SND_\(.*\)=.*/# CONFIG_SND_\1 is not set/' .config
+sed -i -e 's/CONFIG_SND\(.*\)=.*/# CONFIG_SND\1 is not set/' .config
 
 ## build image
 echo "o [$(date +%H:%M:%S)] Building image"
