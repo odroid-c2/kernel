@@ -14,25 +14,22 @@ export KERNEL_BRANCH="6.12"
 echo "[INFO] $(nproc) processors are available"
 
 
-## version check
-NEXT_VERSION=$(wget -qO- "https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/plain/Makefile?h=linux-$KERNEL_BRANCH.y" | awk '/SUBLEVEL/ {print $3; exit}')
-CURRENT_VERSION=$(wget -qO- "https://raw.githubusercontent.com/odroid-c2/kernel/kernel-releases/version" || echo 0)
-if [[ ${CURRENT_VERSION} == ${NEXT_VERSION} ]]; then
-	echo "o ${KERNEL_BRANCH}.${CURRENT_VERSION} is up to date, nothing to do"
-	exit 0
+## sublevel version check
+if [ -z "$1" ]; then
+  export SUBLEVEL=$(wget -qO- "https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/plain/Makefile?h=linux-$KERNEL_BRANCH.y" | awk '/SUBLEVEL/ {print $3; exit}')
 else
-	echo "o Current version is ${KERNEL_BRANCH}.${CURRENT_VERSION}, building ${KERNEL_BRANCH}.${NEXT_VERSION}"
+  # override kernel version and sublevel
+  KERNEL_VERSION=$1
+  export KERNEL_BRANCH=$(echo "${KERNEL_VERSION}" | sed -E 's|([0-9]+\.[0-9]+)\.([0-9]+)|\1|')
+  export SUBLEVEL=$(echo "${KERNEL_VERSION}" | sed -E 's|([0-9]+\.[0-9]+)\.([0-9]+)|\2|')
 fi
-
-
-## set version
-echo "${NEXT_VERSION}" > version
+echo "o Building ${KERNEL_BRANCH}.${SUBLEVEL}"
 
 
 ## get linux kernel
 rm -rf linux-stable
 echo "o [$(date +%H:%M:%S)] Clonning linux-stable kernel"
-wget -q "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-${KERNEL_BRANCH}.${NEXT_VERSION}.tar.xz" -O kernel.tar.xz
+wget -q "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-${KERNEL_BRANCH}.${SUBLEVEL}.tar.xz" -O kernel.tar.xz
 xz -d -v kernel.tar.xz
 mkdir -p linux-stable
 tar xf kernel.tar --strip 1 -C linux-stable
@@ -151,7 +148,7 @@ echo "datahash = $(du ${DST_DIR_BOOT} | openssl dgst -sha1 -binary | xxd -p)" >>
 
 
 ## compress data
-tar -C ${DST_DIR} -czf linux-kernel-amlogic-${KERNEL_BRANCH}.${NEXT_VERSION}.tar.gz .PKGINFO boot/
+tar -C ${DST_DIR} -czf linux-kernel-amlogic-${KERNEL_BRANCH}.${SUBLEVEL}.tar.gz .PKGINFO boot/
 
 
 ## clean again
