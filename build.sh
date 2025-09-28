@@ -26,14 +26,10 @@ fi
 echo "o Building ${KERNEL_BRANCH}.${SUBLEVEL}"
 
 
-## get linux kernel
-rm -rf linux-stable
-echo "o [$(date +%H:%M:%S)] Clonning linux-stable kernel"
-wget -q "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-${KERNEL_BRANCH}.${SUBLEVEL}.tar.xz" -O kernel.tar.xz
-xz -d -v kernel.tar.xz
-mkdir -p linux-stable
-tar xf kernel.tar --strip 1 -C linux-stable
-rm kernel.tar
+## fetch linux kernel
+rm -rf linux-stable && mkdir -p linux-stable
+echo "o [$(date +%H:%M:%S)] Fetching linux kernel"
+wget -q "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-${KERNEL_BRANCH}.${SUBLEVEL}.tar.xz" -O- | xz -d | tar xf - --strip 1 -C linux-stable
 
 
 ## toolchain
