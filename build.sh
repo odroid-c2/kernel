@@ -45,6 +45,8 @@ echo "o [$(date +%H:%M:%S)] Setting-up kernel configuration"
 
 
 ## kernel configuration
+sed -i -e 's/.*CONFIG_NF_TABLES.*/CONFIG_NF_TABLES=y/' .config
+sed -i -e 's/# CONFIG_NETFILTER_\(.*\) is not set/CONFIG_NETFILTER_\1=m/' .config
 sed -i -e 's/.*CONFIG_SQUASHFS_XZ.*/CONFIG_SQUASHFS_XZ=y/' .config
 sed -i -e 's/.*CONFIG_UEVENT_HELPER.*/CONFIG_UEVENT_HELPER=y/' .config
 sed -i -e 's/.*CONFIG_BLK_DEV_RAM.*/CONFIG_BLK_DEV_RAM=y/' .config
@@ -60,6 +62,11 @@ sed -i -e 's/CONFIG_IWL\(.*\)=.*/# CONFIG_IWL\1 is not set/' .config
 sed -i -e 's/CONFIG_PHY_QCOM_\(.*\)=.*/# CONFIG_PHY_QCOM_\1 is not set/' .config
 sed -i -e 's/CONFIG_BT_\(.*\)=.*/# CONFIG_BT_\1 is not set/' .config
 sed -i -e 's/CONFIG_SND\(.*\)=.*/# CONFIG_SND\1 is not set/' .config
+
+
+## give all the new symbols to their default value (no prompts)
+make olddefconfig
+
 
 ## build image
 echo "o [$(date +%H:%M:%S)] Building image"
