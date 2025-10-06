@@ -45,7 +45,8 @@ echo "o [$(date +%H:%M:%S)] Setting-up kernel configuration"
 
 
 ## kernel configuration
-sed -i -e 's/.*CONFIG_NF_TABLES.*/CONFIG_NF_TABLES=y/' .config
+sed -i -e 's/.*CONFIG_NF_TABLES.*/CONFIG_NF_TABLES=m/' .config
+sed -i -e 's/# CONFIG_NF_TABLES_\(.*\) is not set/CONFIG_NF_TABLES_\1=y/' .config
 sed -i -e 's/# CONFIG_NETFILTER_\(.*\) is not set/CONFIG_NETFILTER_\1=m/' .config
 sed -i -e 's/.*CONFIG_SQUASHFS_XZ.*/CONFIG_SQUASHFS_XZ=y/' .config
 sed -i -e 's/.*CONFIG_UEVENT_HELPER.*/CONFIG_UEVENT_HELPER=y/' .config
